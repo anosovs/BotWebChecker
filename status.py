@@ -2,7 +2,6 @@ from webchecker import Webchecker
 from settings import *
 import common_func
 import sqlite3
-import datetime
 
 def take_status_query(db=DATABASE):
     """
@@ -30,7 +29,7 @@ def take_status_query(db=DATABASE):
 
 if __name__ == "__main__":
     failed_status_of_domain = []
-    message = f'{common_func.get_beaty_now()}\n'
+    message = f'Start: {common_func.get_beaty_now()}\n'
     wc = Webchecker()
     # Main try for checking
     for el in take_status_query():
@@ -41,4 +40,7 @@ if __name__ == "__main__":
                     message += f'Can\'t check http://{el}.\n'
                 else:
                     message += f'Failed: http://{el}/. Status {wc.check_status(el)}\n'
-    message += f'{common_func.get_beaty_now()}'
+    message += f'End: {common_func.get_beaty_now()}'
+
+    for chat_id in CHAT_IDS:
+        common_func.send_telegram(chat_id, message)
