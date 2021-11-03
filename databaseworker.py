@@ -71,6 +71,21 @@ def create_db():
     con.commit()
     con.close()
 
+def put_expiration_date(domain, exp_date):
+    values = (exp_date, domain)
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    query = '''
+            UPDATE exp_check
+            SET exp_date = (?)
+            WHERE site_id = (SELECT site_id
+                            FROM sites
+                            WHERE domain = (?)
+                            )
+            '''
+    cur.execute(query, values)
+    con.commit()
+    con.close()
 
 def put_test_values():
     con = sqlite3.connect(DATABASE)

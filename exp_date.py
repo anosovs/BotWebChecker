@@ -2,6 +2,7 @@ import whois
 import sqlite3
 import datetime
 import common_func
+import databaseworker
 from webchecker import Webchecker
 from settings import *
 
@@ -36,7 +37,7 @@ if __name__ == "__main__":
     # If db don't have exp date we gonna take info from whois service, compare and put into db
     for el in take_expdate_query():
         if el[0] is not None:
-            diff_date = datetime.datetime.strptime(el[0], '%Y-%m-%d')-datetime.datetime.now()
+            diff_date = datetime.datetime.strptime(el[0], '%Y-%m-%d %H:%M:%S')-datetime.datetime.now()
             if diff_date.days <= WARN_ADVANCE:
                 exp_date = wc.get_expiration_date(el[1])
                 if (exp_date != -1) and (exp_date is not None):
@@ -48,6 +49,8 @@ if __name__ == "__main__":
         else:
             exp_date = wc.get_expiration_date(el[1])
             if (exp_date != -1) and (exp_date is not None):
+                # writting to db
+                databaseworker.put_expiration_date(el[1], exp_date)
                 diff_date_second = exp_date - datetime.datetime.now()
                 if diff_date_second.days <= WARN_ADVANCE:
                     message += f'Domain {el[1]} expired in {diff_date_second.days} day(s)\n'
