@@ -75,6 +75,24 @@ def create_db():
 def put_test_values():
     con = sqlite3.connect(DATABASE)
     cur = con.cursor()
+    tested_domains = []
+    try:
+        with open('test-domains.txt', 'r') as f:
+            for el in f:
+                tested_domains.append([el.strip()])
+        sql_req = ['''INSERT INTO sites (domain) VALUES(?)''',
+                   '''INSERT INTO status_check (status_check, site_id)
+            VALUES(true, (SELECT site_id FROM sites WHERE domain=(?)))
+            ''',
+                   '''
+            INSERT INTO exp_check (exp_check, site_id)
+            VALUES(true, (SELECT site_id FROM sites WHERE domain=?))
+            ''', ]
+        for sql in sql_req:
+            for el in tested_domains:
+                cur.execute(sql, (el))
+    except:
+        print('file with tested domains not found')
     # random
     domain = ['ajsfhdf.com']
     cur.execute('''
