@@ -81,11 +81,11 @@ def put_test_values():
             for el in f:
                 tested_domains.append([el.strip()])
         sql_req = [
-                '''INSERT INTO sites (domain) VALUES(?)''',
-                '''INSERT INTO status_check (status_check, site_id)
+            '''INSERT INTO sites (domain) VALUES(?)''',
+            '''INSERT INTO status_check (status_check, site_id)
                 VALUES(true, (SELECT site_id FROM sites WHERE domain=(?)))
                 ''',
-                '''
+            '''
                 INSERT INTO exp_check (exp_check, site_id)
                 VALUES(true, (SELECT site_id FROM sites WHERE domain=?))
                 ''',
