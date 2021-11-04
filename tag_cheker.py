@@ -29,11 +29,14 @@ def take_tag_query(db=DATABASE):
 
 
 if __name__ == '__main__':
+    statusForSend = False
     message = f'Start: {common_func.get_beaty_now()}\n'
     wc = Webchecker()
     for query in take_tag_query():
         if wc.check_tag(query[0], query[1]) == -1:
+            statusForSend = True
             message += f'Tag {query[1]} not found on {query[0]}\n'
     message += f'End: {common_func.get_beaty_now()}'
-    for chat_id in CHAT_IDS:
-        common_func.send_telegram(chat_id, message)
+    if statusForSend:
+        for chat_id in CHAT_IDS:
+            common_func.send_telegram(chat_id, message)

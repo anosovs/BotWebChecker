@@ -28,19 +28,18 @@ def take_status_query(db=DATABASE):
 
 
 if __name__ == "__main__":
-    failed_status_of_domain = []
+    statusForSend = False
     message = f'Start: {common_func.get_beaty_now()}\n'
     wc = Webchecker()
-    # Main try for checking
     for el in take_status_query():
         status = wc.check_status(el)
         if status != 200:
-            if status != 200:
-                if status == 999:
-                    message += f'Can\'t check http://{el}.\n'
-                else:
-                    message += f'Failed: http://{el}/. Status {wc.check_status(el)}\n'
+            statusForSend = True
+            if status == 999:
+                message += f'Can\'t check http://{el}.\n'
+            else:
+                message += f'Failed: http://{el}/. Status {wc.check_status(el)}\n'
     message += f'End: {common_func.get_beaty_now()}'
-
-    for chat_id in CHAT_IDS:
-        common_func.send_telegram(chat_id, message)
+    if statusForSend:
+        for chat_id in CHAT_IDS:
+            common_func.send_telegram(chat_id, message)

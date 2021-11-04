@@ -32,6 +32,7 @@ def take_expdate_query(db=DATABASE):
 
 
 if __name__ == "__main__":
+    statusForSend = False
     message = f'Start: {common_func.get_beaty_now()}\n'
     wc = Webchecker()
     # If db have exp date we check it from db, if date so close to warn we check it in whois service
@@ -45,8 +46,10 @@ if __name__ == "__main__":
                 if (exp_date != -1) and (exp_date is not None):
                     diff_date_second = exp_date - datetime.datetime.now()
                     if diff_date_second.days <= WARN_ADVANCE:
+                        statusForSend = True
                         message += f'Domain {el[1]} expired in {diff_date_second.days} day(s)\n'
                 else:
+                    statusForSend = True
                     message += f'Can\'t check expiration date for {el[1]}\n'
         else:
             exp_date = wc.get_expiration_date(el[1])
@@ -55,10 +58,13 @@ if __name__ == "__main__":
                 databaseworker.put_expiration_date(el[1], exp_date)
                 diff_date_second = exp_date - datetime.datetime.now()
                 if diff_date_second.days <= WARN_ADVANCE:
+                    statusForSend = True
                     message += f'Domain {el[1]} expired in {diff_date_second.days} day(s)\n'
             else:
+                statusForSend = True
                 message += f'Can\'t check expiration date for {el[1]}\n'
     # Sending
     message += f'End: {common_func.get_beaty_now()}'
-    for chat_id in CHAT_IDS:
-        common_func.send_telegram(chat_id, message)
+    if statusForSend:
+        for chat_id in CHAT_IDS:
+            common_func.send_telegram(chat_id, message)
