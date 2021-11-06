@@ -65,6 +65,8 @@ if __name__ == "__main__":
                 message += f'Can\'t check expiration date for {el[1]}\n'
     # Sending
     message += f'End: {common_func.get_beaty_now()}'
+    with open('exp_last.txt', 'w') as f:
+        f.write(message)
     if statusForSend:
         for chat_id in CHAT_IDS:
             common_func.send_telegram(chat_id, message)

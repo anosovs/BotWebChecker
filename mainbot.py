@@ -60,6 +60,20 @@ def get_domains(message):
     for el in msg:
         bot.send_message(message.chat.id, f'ID | Domain\n {el}')
 
+@bot.message_handler(commands=['last'])
+def get_last_check(message):
+    msg = 'Last status check:\n'
+    with open('status_last.txt','r') as f:
+        msg += f.read()
+    msg += '\n\nLast expiration date check:\n'
+    with open('exp_last.txt','r') as f:
+        msg += f.read()
+    msg += '\n\nLast existing tag check:\n'
+    with open('tag_last.txt', 'r') as f:
+        msg += f.read()
+    msg = [msg[i:i + 3000] for i in range(0, len(msg), 3000)]
+    for el in msg:
+        bot.send_message(message.chat.id, f'{el}')
 
 
 

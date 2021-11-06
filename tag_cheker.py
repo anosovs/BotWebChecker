@@ -37,6 +37,8 @@ if __name__ == '__main__':
             statusForSend = True
             message += f'Tag {query[1]} not found on {query[0]}\n'
     message += f'End: {common_func.get_beaty_now()}'
+    with open('tag_last.txt', 'w') as f:
+        f.write(message)
     if statusForSend:
         for chat_id in CHAT_IDS:
             common_func.send_telegram(chat_id, message)
