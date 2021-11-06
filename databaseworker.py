@@ -98,12 +98,10 @@ def put_test_values():
         sql_req = [
             '''INSERT INTO sites (domain) VALUES(?)''',
             '''INSERT INTO status_check (status_check, site_id)
-                VALUES(true, (SELECT site_id FROM sites WHERE domain=(?)))
-                ''',
+                VALUES(true, (SELECT site_id FROM sites WHERE domain=(?)))''',
             '''
                 INSERT INTO exp_check (exp_check, site_id)
-                VALUES(true, (SELECT site_id FROM sites WHERE domain=?))
-                ''',
+                VALUES(true, (SELECT site_id FROM sites WHERE domain=?))''',
         ]
         for sql in sql_req:
             for el in tested_domains:
@@ -127,7 +125,50 @@ def put_test_values():
     con.commit()
     con.close()
 
+def add_domain(domain):
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    domain = [domain]
+    sql_req = [
+        '''INSERT INTO sites (domain) VALUES(?)''',
+        '''INSERT INTO status_check (status_check, site_id)
+            VALUES(true, (SELECT site_id FROM sites WHERE domain=(?)))''',
+        '''
+            INSERT INTO exp_check (exp_check, site_id)
+            VALUES(true, (SELECT site_id FROM sites WHERE domain=?))''',
+    ]
+    for sql in sql_req:
+        cur.execute(sql, domain)
+    con.commit()
+    con.close()
+
+def del_domain(domain):
+    sql_req = '''
+        DELETE FROM sites
+        WHERE site_id=(?) OR domain=(?)
+    '''
+    values = (domain, domain)
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    con.commit()
+    con.close()
+
+def get_all_domains():
+    sql_req = '''
+        SELECT site_id, domain
+        FROM sites
+    '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req)
+    domains = cur.fetchall()
+    con.commit()
+    con.close()
+    return domains
+
 
 if __name__ == "__main__":
-    create_db()
-    put_test_values()
+    print(get_all_domains())
