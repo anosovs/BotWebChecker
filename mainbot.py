@@ -88,6 +88,18 @@ def toggle_status(message):
     except:
         bot.send_message(message.chat.id, f'Can\'t toggle status check on {msg}')
 
+@bot.message_handler(commands=['exp_check'])
+def toggle_status(message):
+    msg = message.text.replace('/exp_check', '').strip()
+    try:
+        dbw.toggle_exp_check(msg)
+        if dbw.is_on_exp_check(msg):
+            bot.send_message(message.chat.id, f'Now {msg} have expiration date check is ON')
+        else:
+            bot.send_message(message.chat.id, f'Now {msg} have expiration date check is OFF')
+    except:
+        bot.send_message(message.chat.id, f'Can\'t toggle expiration date on {msg}')
+
 
 # Run bot
 bot.polling()

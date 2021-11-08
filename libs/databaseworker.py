@@ -215,5 +215,51 @@ def is_on_status_check(domain):
         return 0
 
 
+def toggle_exp_check(domain):
+    sql_req = '''
+            UPDATE exp_check
+            SET exp_check = CASE exp_check
+                                WHEN 1 THEN 0
+                                ELSE 1
+                                END
+            WHERE site_id = (
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    con.commit()
+    con.close()
+
+def is_on_exp_check(domain):
+    sql_req = '''
+            SELECT exp_check
+            FROM exp_check
+            WHERE site_id=(
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    result = cur.fetchone()
+    print(result)
+    con.commit()
+    con.close()
+    if result[0] == 1:
+        return 1
+    else:
+        return 0
+
+
 if __name__ == "__main__":
     print(is_on_status_check('akatan.ru'))
