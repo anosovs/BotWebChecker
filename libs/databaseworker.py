@@ -169,6 +169,51 @@ def get_all_domains():
     con.close()
     return domains
 
+def toggle_status_check(domain):
+    sql_req = '''
+            UPDATE status_check
+            SET status_check = CASE status_check
+                                WHEN 1 THEN 0
+                                ELSE 1
+                                END
+            WHERE site_id = (
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    con.commit()
+    con.close()
+
+def is_on_status_check(domain):
+    sql_req = '''
+            SELECT status_check
+            FROM status_check
+            WHERE site_id=(
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    result = cur.fetchone()
+    print(result)
+    con.commit()
+    con.close()
+    if result[0] == 1:
+        return 1
+    else:
+        return 0
+
 
 if __name__ == "__main__":
-    print(get_all_domains())
+    print(is_on_status_check('akatan.ru'))

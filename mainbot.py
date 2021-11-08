@@ -76,6 +76,18 @@ def get_last_check(message):
     for el in msg:
         bot.send_message(message.chat.id, f'{el}')
 
+@bot.message_handler(commands=['status_check'])
+def toggle_status(message):
+    msg = message.text.replace('/status_check', '').strip()
+    try:
+        dbw.toggle_status_check(msg)
+        if dbw.is_on_status_check(msg):
+            bot.send_message(message.chat.id, f'Now {msg} have status check is ON')
+        else:
+            bot.send_message(message.chat.id, f'Now {msg} have status check is OFF')
+    except:
+        bot.send_message(message.chat.id, f'Can\'t toggle status check on {msg}')
+
 
 # Run bot
 bot.polling()
