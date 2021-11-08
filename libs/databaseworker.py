@@ -261,7 +261,7 @@ def is_on_exp_check(domain):
 def toggle_tag_check(domain):
     is_available = is_on_tag_check(domain)
     print(is_available)
-    if is_available == 1:
+    if is_available == 1 or is_available == 0:
         sql_req = '''
             UPDATE tag_check
             SET tag_check = CASE tag_check
@@ -274,21 +274,7 @@ def toggle_tag_check(domain):
                             WHERE site_id=(?) OR domain=(?)
             )
         '''
-    elif is_available == 0:
-        sql_req = '''
-                    UPDATE tag_check
-                    SET tag_check = CASE tag_check
-                                        WHEN 1 THEN 0
-                                        ELSE 1
-                                        END
-                    WHERE site_id = (
-                                    SELECT site_id
-                                    FROM sites
-                                    WHERE site_id=(?) OR domain=(?)
-                    )
-                '''
     else:
-        print('third')
         sql_req = '''
                 INSERT INTO tag_check (tag_check, site_id)
                 VALUES (1, (SELECT site_id
@@ -329,4 +315,36 @@ def is_on_tag_check(domain):
         return 0
     else:
         return None
+
+def add_tag(fortag:dict):
+    is_available = is_on_tag_check(fortag['domain'])
+    print(is_available)
+    if is_available == 1 or is_available == 0:
+        sql_req = '''
+            UPDATE tag_check
+            SET tag_check = CASE tag_check
+                                WHEN 1 THEN 0
+                                ELSE 1
+                                END,
+                tag_text=(?)
+            WHERE site_id = (
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    else:
+        sql_req = '''
+                INSERT INTO tag_check (tag_text, tag_check, site_id)
+                VALUES ((?), 1, (SELECT site_id
+                                FROM sites
+                                WHERE site_id=(?) OR domain=(?)))
+            '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (fortag['tag'], fortag['id'], fortag['domain'])
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    con.commit()
+    con.close()
 

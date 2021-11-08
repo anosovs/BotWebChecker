@@ -1,7 +1,7 @@
 from settings import *
 from libs import common_func as cf, databaseworker as dbw
 import telebot
-
+fortag = {}
 bot = telebot.TeleBot(API_TOKEN)
 
 
@@ -89,7 +89,7 @@ def toggle_status(message):
         bot.send_message(message.chat.id, f'Can\'t toggle status check on {msg}')
 
 @bot.message_handler(commands=['exp_check'])
-def toggle_status(message):
+def toggle_exp(message):
     msg = message.text.replace('/exp_check', '').strip()
     try:
         dbw.toggle_exp_check(msg)
@@ -101,7 +101,7 @@ def toggle_status(message):
         bot.send_message(message.chat.id, f'Can\'t toggle expiration date on {msg}')
 
 @bot.message_handler(commands=['tag_check'])
-def toggle_status(message):
+def toggle_tag(message):
     msg = message.text.replace('/tag_check', '').strip()
     try:
         dbw.toggle_tag_check(msg)
@@ -112,7 +112,28 @@ def toggle_status(message):
     except:
         bot.send_message(message.chat.id, f'Can\'t toggle tag on {msg}')
 
+@bot.message_handler(commands=['tag'])
+def add_tag(message):
+    domain = message.text.replace('/tag', '').strip()
+    global fortag
+    try:
+        fortag['domain'] = domain
+        fortag['id'] = domain
+        msg = bot.send_message(message.chat.id, f"Enter tag for domain {domain}:")
+        bot.register_next_step_handler(msg, ask_tag)
+    except:
+        fortag = {}
+        bot.send_message(message.chat.id, 'Ooops, something gonna wrong')
 
+def ask_tag(message):
+    global fortag
+    fortag['tag'] = message.text
+    try:
+        dbw.add_tag(fortag)
+        fortag = {}
+        bot.send_message(message.chat.id, f"{fortag['tag']} added for site {fortag['domain']}")
+    except:
+        bot.send_message(message.chat.id, 'Ooops, something gonna wrong')
 
 # Run bot
 bot.polling()
