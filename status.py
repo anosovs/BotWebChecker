@@ -40,7 +40,7 @@ if __name__ == "__main__":
             else:
                 message += f'Failed: http://{el}/. Status {wc.check_status(el)}\n'
     message += f'End: {common_func.get_beaty_now()}'
-    with open('status_last.txt', 'w') as f:
+    with open('logs/status_last.txt', 'w') as f:
         f.write(message)
     if statusForSend:
         for chat_id in CHAT_IDS:

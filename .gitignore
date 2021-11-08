@@ -5,9 +5,9 @@ settings.py
 dbwebcheker.db
 notes.txt
 test-domains.txt
-exp_last.txt
-tag_last.txt
-status_last.txt
+logs/exp_last.txt
+logs/tag_last.txt
+logs/status_last.txt
 
 
 ### Python template

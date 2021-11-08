@@ -26,6 +26,7 @@ def start(message):
                                           f'/last - return result of last check\n'
                                           f'/chat_id - available for everybody return chat_id')
 
+
 @bot.message_handler(commands=['add'])
 def add_domain(message):
     msg = message.text.replace('/add ', '').strip()
@@ -37,6 +38,7 @@ def add_domain(message):
             bot.send_message(message.chat.id, 'Something gonna wrong when adding domain')
     else:
         bot.send_message(message.chat.id, f'Uncorrected domain - {msg}')
+
 
 @bot.message_handler(commands=['del'])
 def del_domain(message):
@@ -50,6 +52,7 @@ def del_domain(message):
     else:
         bot.send_message(message.chat.id, f'{msg} is incorrect')
 
+
 @bot.message_handler(commands=['domains'])
 def get_domains(message):
     msg = ''
@@ -60,21 +63,21 @@ def get_domains(message):
     for el in msg:
         bot.send_message(message.chat.id, f'ID | Domain\n {el}')
 
+
 @bot.message_handler(commands=['last'])
 def get_last_check(message):
     msg = 'Last status check:\n'
-    with open('status_last.txt','r') as f:
+    with open('logs/status_last.txt', 'r') as f:
         msg += f.read()
     msg += '\n\nLast expiration date check:\n'
-    with open('exp_last.txt','r') as f:
+    with open('logs/exp_last.txt', 'r') as f:
         msg += f.read()
     msg += '\n\nLast existing tag check:\n'
-    with open('tag_last.txt', 'r') as f:
+    with open('logs/tag_last.txt', 'r') as f:
         msg += f.read()
     msg = [msg[i:i + 3000] for i in range(0, len(msg), 3000)]
     for el in msg:
         bot.send_message(message.chat.id, f'{el}')
-
 
 
 # Run bot
