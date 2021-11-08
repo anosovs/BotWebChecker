@@ -1,7 +1,7 @@
-from webchecker import Webchecker
+from libs.webchecker import Webchecker
 import sqlite3
 from settings import *
-import common_func
+from libs import common_func
 
 
 def take_tag_query(db=DATABASE):

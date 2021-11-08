@@ -1,9 +1,7 @@
-import whois
 import sqlite3
 import datetime
-import common_func
-import databaseworker
-from webchecker import Webchecker
+from libs import common_func, databaseworker
+from libs.webchecker import Webchecker
 from settings import *
 
 

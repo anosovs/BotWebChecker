@@ -92,7 +92,7 @@ def put_test_values():
     cur = con.cursor()
     tested_domains = []
     try:
-        with open('test-domains.txt', 'r') as f:
+        with open('../test-domains.txt', 'r') as f:
             for el in f:
                 tested_domains.append([el.strip()])
         sql_req = [

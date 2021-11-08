@@ -1,6 +1,6 @@
-from webchecker import Webchecker
+from libs.webchecker import Webchecker
 from settings import *
-import common_func
+from libs import common_func
 import sqlite3
 
 def take_status_query(db=DATABASE):

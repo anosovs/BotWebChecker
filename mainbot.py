@@ -1,9 +1,6 @@
-import databaseworker as dbw
-from webchecker import Webchecker
 from settings import *
-import common_func as cf
+from libs import common_func as cf, databaseworker as dbw
 import telebot
-from telebot import types
 
 bot = telebot.TeleBot(API_TOKEN)
 
