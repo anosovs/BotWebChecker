@@ -206,7 +206,6 @@ def is_on_status_check(domain):
     cur.execute("PRAGMA foreign_keys = ON")
     cur.execute(sql_req, values)
     result = cur.fetchone()
-    print(result)
     con.commit()
     con.close()
     if result[0] == 1:
@@ -252,7 +251,6 @@ def is_on_exp_check(domain):
     cur.execute("PRAGMA foreign_keys = ON")
     cur.execute(sql_req, values)
     result = cur.fetchone()
-    print(result)
     con.commit()
     con.close()
     if result[0] == 1:
@@ -260,6 +258,75 @@ def is_on_exp_check(domain):
     else:
         return 0
 
+def toggle_tag_check(domain):
+    is_available = is_on_tag_check(domain)
+    print(is_available)
+    if is_available == 1:
+        sql_req = '''
+            UPDATE tag_check
+            SET tag_check = CASE tag_check
+                                WHEN 1 THEN 0
+                                ELSE 1
+                                END
+            WHERE site_id = (
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    elif is_available == 0:
+        sql_req = '''
+                    UPDATE tag_check
+                    SET tag_check = CASE tag_check
+                                        WHEN 1 THEN 0
+                                        ELSE 1
+                                        END
+                    WHERE site_id = (
+                                    SELECT site_id
+                                    FROM sites
+                                    WHERE site_id=(?) OR domain=(?)
+                    )
+                '''
+    else:
+        print('third')
+        sql_req = '''
+                INSERT INTO tag_check (tag_check, site_id)
+                VALUES (1, (SELECT site_id
+                                FROM sites
+                                WHERE site_id=(?) OR domain=(?)))
+            '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    con.commit()
+    con.close()
 
-if __name__ == "__main__":
-    print(is_on_status_check('akatan.ru'))
+def is_on_tag_check(domain):
+    sql_req = '''
+            SELECT tag_check
+            FROM tag_check
+            WHERE site_id=(
+                            SELECT site_id
+                            FROM sites
+                            WHERE site_id=(?) OR domain=(?)
+            )
+        '''
+    con = sqlite3.connect(DATABASE)
+    cur = con.cursor()
+    values = (domain, domain)
+    cur.execute("PRAGMA foreign_keys = ON")
+    cur.execute(sql_req, values)
+    result = cur.fetchone()
+    con.commit()
+    con.close()
+    if result is None:
+        return None
+    if result[0] == 1:
+        return 1
+    elif result[0] == 0:
+        return 0
+    else:
+        return None
+

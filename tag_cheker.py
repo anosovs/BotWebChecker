@@ -33,9 +33,13 @@ if __name__ == '__main__':
     message = f'Start: {common_func.get_beaty_now()}\n'
     wc = Webchecker()
     for query in take_tag_query():
-        if wc.check_tag(query[0], query[1]) == -1:
+        if query[1] is not None:
+            if wc.check_tag(query[0], query[1]) == -1:
+                statusForSend = True
+                message += f'Tag {query[1]} not found on {query[0]}\n'
+        else:
             statusForSend = True
-            message += f'Tag {query[1]} not found on {query[0]}\n'
+            message += f'Tag for {query[0]} not found in DB\n'
     message += f'End: {common_func.get_beaty_now()}'
     with open('logs/tag_last.txt', 'w') as f:
         f.write(message)

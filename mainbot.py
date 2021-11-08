@@ -100,6 +100,19 @@ def toggle_status(message):
     except:
         bot.send_message(message.chat.id, f'Can\'t toggle expiration date on {msg}')
 
+@bot.message_handler(commands=['tag_check'])
+def toggle_status(message):
+    msg = message.text.replace('/tag_check', '').strip()
+    try:
+        dbw.toggle_tag_check(msg)
+        if dbw.is_on_tag_check(msg):
+            bot.send_message(message.chat.id, f'Now {msg} have tag check is ON')
+        else:
+            bot.send_message(message.chat.id, f'Now {msg} have tag check is OFF')
+    except:
+        bot.send_message(message.chat.id, f'Can\'t toggle tag on {msg}')
+
+
 
 # Run bot
 bot.polling()
