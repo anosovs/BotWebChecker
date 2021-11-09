@@ -260,7 +260,6 @@ def is_on_exp_check(domain):
 
 def toggle_tag_check(domain):
     is_available = is_on_tag_check(domain)
-    print(is_available)
     if is_available == 1 or is_available == 0:
         sql_req = '''
             UPDATE tag_check
@@ -318,7 +317,6 @@ def is_on_tag_check(domain):
 
 def add_tag(fortag:dict):
     is_available = is_on_tag_check(fortag['domain'])
-    print(is_available)
     if is_available == 1 or is_available == 0:
         sql_req = '''
             UPDATE tag_check

@@ -133,6 +133,7 @@ def ask_tag(message):
         fortag = {}
         bot.send_message(message.chat.id, f"{fortag['tag']} added for site {fortag['domain']}")
     except:
+        fortag = {}
         bot.send_message(message.chat.id, 'Ooops, something gonna wrong')
 
 # Run bot
