@@ -29,12 +29,16 @@ Allows you to check sites for availability using three types of checks. If probl
 1. Create and use [virtual enviroment](https://packaging.python.org/guides/installing-using-pip-and-virtual-environments/)
 2. Install all reqired packages
 
-   > python pip install -r requirements.txt
+   > pip3 install -r requirements.txt
 
 3. Run first_run.py. This will create settings.py with params: sqlite db, telegram API token and count of days for warning about domain 
    expiration date. Just follow the suggested steps
 
-    >python first_run.py
+    >python3 first_run.py
    
-4. Add into Cron desired check modules (checker_exp_dape.py, checker_status.py, checker_tag.py) with desired intervals
+4. Add into Cron desired check modules (checker_exp_date.py, checker_status.py, checker_tag.py) with desired intervals  
+     Example:
+   ```bash
+   echo "*/10 * * * * * cd /bot_home_dir && /usr/bin/python3 checker_exp_date.py >> /path_to_log 2>1&" >> /etc/crontab
+   ```
 5. Add into Cron mainbot.py for starting when system restarted
